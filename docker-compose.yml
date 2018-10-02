@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/go/src/github.com/deraru/gogocha:cached
+    depends_on:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    environment:
+      - POSTGRES_USER=gogocha
+      - POSTGRES_PASSWORD=gogocha
+  test:
+    image: gogocha_app
+    command: go test -v ./...
+    volumes:
+      - .:/go/src/github.com/deraru/gogocha:cached
